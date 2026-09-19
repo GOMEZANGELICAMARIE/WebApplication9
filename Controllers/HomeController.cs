@@ -7,7 +7,6 @@ namespace WebApplication9.Controllers
     {
         private bool IsLoggedIn() => HttpContext.Session.GetString("IsAuthenticated") == "true";
 
-        
         public IActionResult Index()
         {
             if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
@@ -16,7 +15,6 @@ namespace WebApplication9.Controllers
             return View(projects);
         }
 
-        
         public IActionResult Detail(int id)
         {
             if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
@@ -27,22 +25,22 @@ namespace WebApplication9.Controllers
             return View(project);
         }
 
-        
         [HttpPost]
-        public IActionResult AddComment(int projectId, string commentText)
+        public IActionResult AddComment(int projectId, string content)
         {
-            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
-
-            var project = ProjectData.Projects.FirstOrDefault(p => p.Id == projectId);
-            if (project != null && !string.IsNullOrWhiteSpace(commentText))
+            if (!string.IsNullOrWhiteSpace(content))
             {
-                string currentUser = HttpContext.Session.GetString("Username") ?? "Guest";
-                project.Comments.Add(new CommentModel
+                var project = ProjectData.Projects.FirstOrDefault(p => p.Id == projectId);
+                if (project != null)
                 {
-                    Author = currentUser,
-                    Text = commentText,
-                    PostedAt = DateTime.Now
-                });
+                    project.Comments ??= new List<CommentModel>();
+                    project.Comments.Add(new CommentModel
+                    {
+                        Author = "Admin",
+                        Text = content,
+                        PostedAt = DateTime.Now
+                    });
+                }
             }
 
             return RedirectToAction("Detail", new { id = projectId });

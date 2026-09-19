@@ -1,62 +1,70 @@
 ﻿@model WebApplication9.Models.Project
+
 @{
     ViewData["Title"] = Model.Title;
 }
 
 <div class="mb-4">
-    <a asp-action="Index" class="btn btn-bw-outline btn-sm">&larr; Back to Directory</a>
+    <a asp-action="Index" class="btn btn-outline-dark border-2 fw-bold px-3 py-2">
+        &larr; Back to Directory
+    </a>
 </div>
 
-<div class="card p-3 mb-4">
-    <div class="card-body">
-        <h1 class="card-title fw-bold text-uppercase">@Model.Title</h1>
-        <hr class="border-secondary" />
-        <img src="@Model.ThumbnailUrl" class="img-fluid rounded mb-4 border border-secondary" style="max-height: 350px; width: 100%; object-fit: cover; filter: grayscale(80%);" alt="@Model.Title" />
+<div class="card bg-black text-white p-4 p-md-5 border border-secondary shadow-lg rounded-3 mb-4">
+    <h1 class="fw-bold text-uppercase mb-4">@Model.Title</h1>
 
-        <h5 class="fw-bold text-uppercase text-light">Description</h5>
-        <p class="text-secondary mb-4">@Model.Description</p>
-
-        <h5 class="fw-bold text-uppercase text-light">Details</h5>
-        <p class="text-secondary mb-4">@Model.Details</p>
-
-        <p class="mb-0">
-            <strong class="text-light">Repository:</strong>
-            <a href="@Model.GithubUrl" target="_blank" class="bw-link ms-1">@Model.GithubUrl</a>
-        </p>
+    <div class="mb-4">
+        <h5 class="fw-bold text-uppercase text-secondary small tracking-wide">Description</h5>
+        <p class="fs-5">@Model.Description</p>
     </div>
+
+    @if (!string.IsNullOrEmpty(Model.Details))
+    {
+        <div class="mb-4">
+            <h5 class="fw-bold text-uppercase text-secondary small tracking-wide">Details</h5>
+            <p class="text-light">@Model.Details</p>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.GithubUrl))
+    {
+        <div>
+            <h5 class="fw-bold text-uppercase text-secondary small tracking-wide">Repository</h5>
+            <a href="@Model.GithubUrl" target="_blank" class="bw-link text-white fw-semibold text-decoration-underline">
+                @Model.GithubUrl
+            </a>
+        </div>
+    }
 </div>
 
-<div class="card p-3">
-    <div class="card-body">
-        <h4 class="fw-bold text-uppercase mb-3">Comments</h4>
-        <hr class="border-secondary" />
+<div class="card bg-black text-white p-4 border border-secondary shadow-lg rounded-3">
+    <h3 class="fw-bold text-uppercase mb-3">Comments</h3>
 
-        @if (!Model.Comments.Any())
-        {
-            <p class="text-secondary italic">No comments yet. Be the first to leave one.</p>
-        }
-        else
-        {
-            <ul class="list-group mb-4">
-                @foreach (var c in Model.Comments)
-                {
-                    <li class="list-group-item mb-2 rounded">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong class="text-white">@c.Author</strong>
-                            <small class="text-secondary">@c.PostedAt.ToString("g")</small>
-                        </div>
-                        <p class="mb-0 mt-2 text-light">@c.Text</p>
-                    </li>
-                }
-            </ul>
-        }
+    @if (Model.Comments != null && Model.Comments.Any())
+    {
+        <ul class="list-group mb-4">
+            @foreach (var comment in Model.Comments)
+            {
+                <li class="list-group-item bg-dark text-white border-secondary mb-2 rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-light">@comment.Author</strong>
+                        <small class="text-secondary">@comment.PostedAt.ToString("g")</small>
+                    </div>
+                    <p class="mb-0 text-white-50">@comment.Text</p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-secondary small mb-3">No comments yet. Be the first to leave one.</p>
+    }
 
-        <form asp-action="AddComment" method="post">
-            <input type="hidden" name="projectId" value="@Model.Id" />
-            <div class="mb-3">
-                <textarea name="commentText" class="form-control" rows="3" placeholder="Write a comment..." required></textarea>
-            </div>
-            <button type="submit" class="btn btn-bw-primary px-4">Post Comment</button>
-        </form>
-    </div>
+    <form asp-controller="Home" asp-action="AddComment" method="post">
+        <input type="hidden" name="projectId" value="@Model.Id" />
+        <div class="mb-3">
+            <textarea name="content" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Write a comment..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-light px-4 py-2 fw-bold">Post Comment</button>
+    </form>
 </div>

@@ -12,11 +12,10 @@
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100 p-2">
-                <img src="@item.ThumbnailUrl" class="card-img-top border-bottom border-dark" alt="@item.Title" style="height: 200px; object-fit: cover; filter: grayscale(80%);">
-                <div class="card-body d-flex flex-column">
+            <div class="card h-100 p-3">
+                <div class="card-body d-flex flex-column p-0">
                     <h5 class="card-title fw-bold text-white mb-2">@item.Title</h5>
-                    <p class="card-text text-secondary mb-3">@item.Description</p>
+                    <p class="card-text text-secondary mb-3 flex-grow-1">@item.Description</p>
                     <p class="mb-3">
                         <a href="@item.GithubUrl" target="_blank" class="bw-link small">
                             GitHub Repository &rarr;
